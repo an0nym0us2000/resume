@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Sparkles, Wand2, FileText, Upload } from 'lucide-react';
+import { Sparkles, Wand2, Upload } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
+import { ResumeImport } from '@/components/resume/ResumeImport';
 
 export function Toolbar() {
   const [jobDescription, setJobDescription] = useState('');
@@ -53,35 +54,14 @@ export function Toolbar() {
           </DialogContent>
         </Dialog>
 
-        <Dialog>
-          <DialogTrigger asChild>
+        <ResumeImport
+          trigger={
             <Button variant="outline" size="sm">
               <Upload className="mr-2 h-4 w-4" />
               Import Resume
             </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Import Existing Resume</DialogTitle>
-              <DialogDescription>
-                Upload your existing resume (PDF or DOCX) and we'll parse it for you.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12">
-                <div className="text-center">
-                  <FileText className="mx-auto h-12 w-12 text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-600">
-                    Drag and drop or click to upload
-                  </p>
-                  <Button variant="outline" className="mt-4">
-                    Choose File
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+          }
+        />
 
         <Button variant="outline" size="sm">
           <Wand2 className="mr-2 h-4 w-4" />

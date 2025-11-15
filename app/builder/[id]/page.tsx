@@ -15,11 +15,21 @@ import {
   BarChart3,
   Check,
   Loader2,
+  History,
 } from 'lucide-react';
 import { useResumeStore } from '@/lib/store/resumeStore';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/lib/hooks/useAutoSave';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { VersionHistory } from '@/components/resume/VersionHistory';
+import { TemplateSelector } from '@/components/resume/TemplateSelector';
 
 export default function BuilderPage() {
   const params = useParams();
@@ -184,14 +194,27 @@ export default function BuilderPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <LayoutTemplate className="mr-2 h-4 w-4" />
-              Template
-            </Button>
+            <TemplateSelector />
             <Button variant="outline" size="sm">
               <BarChart3 className="mr-2 h-4 w-4" />
               ATS Score
             </Button>
+            {resumeId && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <History className="mr-2 h-4 w-4" />
+                    History
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Version History</DialogTitle>
+                  </DialogHeader>
+                  <VersionHistory resumeId={resumeId} />
+                </DialogContent>
+              </Dialog>
+            )}
             <Button variant="outline" size="sm" onClick={() => setShowPreview(!showPreview)}>
               {showPreview ? (
                 <>
