@@ -1,0 +1,198 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  fullName      String?
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Subscription
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  subscriptionStatus     String?   @default("free") // free, active, canceled, past_due
+
+  // Relations
+  resumes       Resume[]
+  templates     Template[]
+  payments      Payment[]
+
+  @@map("users")
+}
+
+model Resume {
+  id              String    @id @default(uuid())
+  userId          String
+  title           String
+  data            Json      // Full resume data as JSON
+  templateId      String?
+
+  // Metadata
+  atsScore        Int?
+  lastAtsCheck    DateTime?
+  keywords        Json?     // Array of keywords
+
+  // Version control
+  version         Int       @default(1)
+  parentId        String?   // For version history
+  isActive        Boolean   @default(true)
+
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastAccessedAt  DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template        Template? @relation(fields: [templateId], references: [id])
+  versions        ResumeVersion[]
+  atsAnalyses     AtsAnalysis[]
+
+  @@index([userId])
+  @@index([templateId])
+  @@map("resumes")
+}
+
+model ResumeVersion {
+  id              String    @id @default(uuid())
+  resumeId        String
+  data            Json
+  version         Int
+  changeNote      String?
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  resume          Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("resume_versions")
+}
+
+model Template {
+  id              String    @id @default(uuid())
+  name            String
+  description     String?
+  thumbnail       String?
+  category        String?   // professional, creative, minimal, etc.
+
+  // Template structure
+  layout          Json      // Layout configuration
+  styles          Json      // Color, font, spacing config
+  isAtsOptimized  Boolean   @default(true)
+  isPremium       Boolean   @default(false)
+  isActive        Boolean   @default(true)
+
+  // Creator (for admin-created templates, userId will be null)
+  userId          String?
+
+  // Popularity
+  usageCount      Int       @default(0)
+
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User?     @relation(fields: [userId], references: [id])
+  resumes         Resume[]
+
+  @@index([userId])
+  @@map("templates")
+}
+
+model AtsAnalysis {
+  id              String    @id @default(uuid())
+  resumeId        String
+
+  // Analysis results
+  score           Int
+  keywords        Json      // Matched keywords
+  missingKeywords Json      // Missing keywords
+  suggestions     Json      // Array of suggestions
+  weakSections    Json      // Sections that need improvement
+  impactScore     Json      // Impact scores by section
+
+  // Job description comparison
+  jobDescription  String?
+  jobTitle        String?
+
+  // Timestamps
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  resume          Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+  @@map("ats_analyses")
+}
+
+model Payment {
+  id              String    @id @default(uuid())
+  userId          String
+  stripePaymentId String    @unique
+  amount          Int       // Amount in cents
+  currency        String    @default("usd")
+  status          String    // succeeded, pending, failed
+  description     String?
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("payments")
+}
+
+model AiPrompt {
+  id              String    @id @default(uuid())
+  name            String
+  type            String    // generate, rewrite, grammar, ats_optimize, etc.
+  prompt          String    @db.Text
+  systemPrompt    String?   @db.Text
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("ai_prompts")
+}
+
+model BulletPreset {
+  id              String    @id @default(uuid())
+  role            String    // e.g., "Software Engineer", "Product Manager"
+  industry        String?
+  bullets         Json      // Array of preset bullet points
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([role])
+  @@map("bullet_presets")
+}
+
+model AiUsage {
+  id              String    @id @default(uuid())
+  userId          String
+  type            String    // generate, rewrite, ats_analyze, etc.
+  tokens          Int
+  cost            Decimal   @db.Decimal(10, 4)
+  success         Boolean   @default(true)
+  errorMessage    String?
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("ai_usage")
+}
