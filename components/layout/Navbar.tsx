@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { DarkModeToggle } from './DarkModeToggle';
 
 interface NavbarProps {
   user?: {
@@ -28,7 +29,7 @@ export function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-lg">
+    <nav className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-gray-950/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
@@ -74,7 +75,8 @@ export function Navbar({ user }: NavbarProps) {
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <DarkModeToggle />
           {!user ? (
             <>
               <Button variant="ghost" size="sm" asChild>
