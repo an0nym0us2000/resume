@@ -43,8 +43,20 @@ const defaultSectionOrder: SectionConfig[] = [
   { id: '9', type: 'languages', title: 'Languages', visible: false, order: 8 },
 ];
 
+const defaultResumeData: ResumeData = {
+  personalInfo: {
+    fullName: '',
+    email: '',
+    phone: '',
+    location: '',
+  },
+  workExperience: [],
+  education: [],
+  skills: [],
+};
+
 export const useResumeStore = create<ResumeState>((set) => ({
-  resumeData: null,
+  resumeData: defaultResumeData,
   style: defaultStyle,
   templateId: null,
   sectionOrder: defaultSectionOrder,
@@ -56,7 +68,7 @@ export const useResumeStore = create<ResumeState>((set) => ({
     set((state) => ({
       resumeData: state.resumeData
         ? { ...state.resumeData, [section]: data }
-        : null,
+        : { ...defaultResumeData, [section]: data },
     })),
 
   setStyle: (styleUpdate) =>
@@ -73,7 +85,7 @@ export const useResumeStore = create<ResumeState>((set) => ({
 
   reset: () =>
     set({
-      resumeData: null,
+      resumeData: defaultResumeData,
       style: defaultStyle,
       templateId: null,
       sectionOrder: defaultSectionOrder,
