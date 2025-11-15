@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PersonalInfoEditor } from './sections/PersonalInfoEditor';
 import { SummaryEditor } from './sections/SummaryEditor';
-import { WorkExperienceEditor } from './sections/WorkExperienceEditor';
+import { WorkExperienceEditor } from './sections/WorkExperienceEditorDnD';
 import { EducationEditor } from './sections/EducationEditor';
 import { SkillsEditor } from './sections/SkillsEditor';
 import { ProjectsEditor } from './sections/ProjectsEditor';
