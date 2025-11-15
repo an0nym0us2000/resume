@@ -16,7 +16,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 
 interface NavbarProps {
   user?: {
-    email: string;
+    email?: string;
     fullName?: string;
   } | null;
 }
@@ -95,7 +95,7 @@ export function Navbar({ user }: NavbarProps) {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
                     <AvatarFallback>
-                      {user.fullName?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                      {user.fullName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

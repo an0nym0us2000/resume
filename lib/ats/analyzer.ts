@@ -156,7 +156,7 @@ function extractKeywords(text: string): string[] {
   const filtered = words.filter((word) => !stopWords.has(word));
 
   // Get unique keywords
-  const unique = [...new Set(filtered)];
+  const unique = Array.from(new Set(filtered));
 
   // Return top keywords (you might want to use TF-IDF here)
   return unique.slice(0, 20);
@@ -183,7 +183,7 @@ function extractResumeKeywords(resumeData: ResumeData): string[] {
     keywords.push(...skillCat.items);
   });
 
-  return [...new Set(keywords)];
+  return Array.from(new Set(keywords));
 }
 
 function analyzeContactInfo(personalInfo: any): number {

@@ -62,7 +62,13 @@ export default async function TemplatesPage() {
             </Button>
           </Card>
         ) : (
-          templates.map((template) => (
+          templates.map((template: {
+            id: string;
+            name: string;
+            description: string | null;
+            isPremium: boolean;
+            isActive: boolean;
+          }) => (
             <Card key={template.id} className="overflow-hidden">
               {/* Preview */}
               <div className="aspect-[8.5/11] border-b bg-gray-50 p-4">
@@ -150,13 +156,13 @@ export default async function TemplatesPage() {
         <Card className="p-4">
           <p className="text-sm text-gray-600">Active Templates</p>
           <p className="mt-1 text-2xl font-bold">
-            {templates.filter((t) => t.isActive).length}
+            {templates.filter((t: { isActive: boolean }) => t.isActive).length}
           </p>
         </Card>
         <Card className="p-4">
           <p className="text-sm text-gray-600">Premium Templates</p>
           <p className="mt-1 text-2xl font-bold">
-            {templates.filter((t) => t.isPremium).length}
+            {templates.filter((t: { isPremium: boolean }) => t.isPremium).length}
           </p>
         </Card>
       </div>

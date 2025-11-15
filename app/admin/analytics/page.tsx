@@ -10,6 +10,14 @@ import {
 } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 
+type AiUsageWithUser = {
+  id: string;
+  type: string;
+  userId: string;
+  tokens: number;
+  createdAt: Date;
+};
+
 export default async function AnalyticsPage() {
   // Fetch analytics data
   const [
@@ -32,11 +40,6 @@ export default async function AnalyticsPage() {
     prisma.aiUsage.findMany({
       take: 10,
       orderBy: { createdAt: 'desc' },
-      include: {
-        user: {
-          select: { email: true },
-        },
-      },
     }),
   ]);
 
@@ -174,17 +177,17 @@ export default async function AnalyticsPage() {
           {recentAiUsage.length === 0 ? (
             <p className="text-sm text-gray-500">No AI usage yet</p>
           ) : (
-            recentAiUsage.map((usage) => (
+            recentAiUsage.map((usage: AiUsageWithUser) => (
               <div
                 key={usage.id}
                 className="flex items-center justify-between rounded-lg border p-3"
               >
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">{usage.operation}</p>
-                  <p className="text-sm text-gray-500">{usage.user.email}</p>
+                  <p className="font-medium text-gray-900">{usage.type}</p>
+                  <p className="text-sm text-gray-500">{usage.tokens} tokens</p>
                 </div>
                 <div className="text-right">
-                  <Badge variant="secondary">{usage.model}</Badge>
+                  <Badge variant="secondary">User: {usage.userId.slice(0, 8)}</Badge>
                   <p className="mt-1 text-xs text-gray-500">
                     {new Date(usage.createdAt).toLocaleString()}
                   </p>

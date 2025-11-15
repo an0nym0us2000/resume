@@ -20,6 +20,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { prisma } from '@/lib/prisma';
 
+type UserWithResumes = {
+  id: string;
+  email: string;
+  subscriptionStatus: string | null;
+  stripeCustomerId: string | null;
+  createdAt: Date;
+  resumes: { id: string }[];
+};
+
 export default async function UsersPage() {
   // Fetch users with their resume counts
   const users = await prisma.user.findMany({
@@ -34,7 +43,7 @@ export default async function UsersPage() {
     take: 50,
   });
 
-  const usersWithCounts = users.map((user) => ({
+  const usersWithCounts = users.map((user: UserWithResumes) => ({
     id: user.id,
     email: user.email,
     subscriptionStatus: user.subscriptionStatus || 'free',
@@ -83,7 +92,14 @@ export default async function UsersPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              usersWithCounts.map((user) => (
+              usersWithCounts.map((user: {
+                id: string;
+                email: string;
+                subscriptionStatus: string;
+                resumeCount: number;
+                createdAt: Date;
+                stripeCustomerId: string | null;
+              }) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.email}</TableCell>
                   <TableCell>

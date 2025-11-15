@@ -32,8 +32,8 @@ export async function POST(
     // Generate PDF
     const pdfBuffer = await generateResumePDF(resume.data);
 
-    // Return PDF as blob
-    return new NextResponse(pdfBuffer, {
+    // Return PDF as blob (convert Buffer to Uint8Array)
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="resume-${resume.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.pdf"`,

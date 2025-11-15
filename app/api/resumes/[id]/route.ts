@@ -81,7 +81,7 @@ export async function PATCH(
     await prisma.resumeVersion.create({
       data: {
         resumeId: params.id,
-        data: existingResume.data,
+        data: existingResume.data as never,
         version: existingResume.version,
         changeNote: 'Auto-saved version',
       },

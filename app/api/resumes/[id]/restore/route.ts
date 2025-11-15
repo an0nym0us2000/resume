@@ -55,7 +55,7 @@ export async function POST(
     await prisma.resumeVersion.create({
       data: {
         resumeId: params.id,
-        data: resume.data,
+        data: resume.data as never,
         version: resume.version,
         changeNote: 'Before restore',
       },
@@ -67,7 +67,7 @@ export async function POST(
         id: params.id,
       },
       data: {
-        data: version.data,
+        data: version.data as never,
         version: resume.version + 1,
         lastAccessedAt: new Date(),
       },
